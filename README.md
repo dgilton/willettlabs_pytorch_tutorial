@@ -21,19 +21,23 @@ destroy a busted environment without worrying you're removing your native Python
 Not messing up all your code from 2018 because you updated to a new version of PyTorch is invaluable.
 
 To install conda on a Mac or Windows device:
-Go here: [Anaconda Link](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
+
+Go here: [Anaconda Link](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)<br>
 Follow the instructions. I'd recommend Anaconda, but miniconda is fine for us.
 
 To install conda on your slurm account:
-Go here: [Miniconda source](https://docs.conda.io/en/latest/miniconda.html)
-And download the latest Miniconda package.
-If you're using a Mac or Linux device, open Terminal. Navigate to your Downloads, and `scp` the downloader to Slurm.
-Then ssh to the cluster, and 
 
-This can be done with the following command (Change my username to yours!):
+Go here: [Miniconda source](https://docs.conda.io/en/latest/miniconda.html)
+and download the latest Miniconda package.<br>
+If you're using a Mac or Linux device, open Terminal. Navigate to your Downloads, and `scp` the downloader to Slurm.<br>
+Then ssh to the cluster, and run the script.
+
+This can be done with the following commands (Change my username in these lines to yours!):<br>
     ``
     cd Downloads
     scp Miniconda3-latest-Linux-x86.sh gilton@slurm.ttic.edu:~
+    ssh gilton@slurm.ttic.edu
+    bash Miniconda3-latest-Linux-x86.sh
     ``
 
 
@@ -65,8 +69,7 @@ Make sure you can run Python, and are able to run ``import torch``
 If you're running this on Slurm, do the following. **Note: Using conda to install pytorch will NOT install the
 GPU-compatible version if you run this script using the head node! Submit a job!**
 
-First, clone this repository to your home directory. Then, create a text file with the following lines in it, named
-conda_install
+First, clone this repository to your home directory. Then, create a text file named conda_install with the following lines in it:
 
     ```
     #!/bin/bash

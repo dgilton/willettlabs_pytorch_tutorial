@@ -33,12 +33,12 @@ If you're using a Mac or Linux device, open Terminal. Navigate to your Downloads
 Then ssh to the cluster, and run the script.
 
 This can be done with the following commands (Change my username in these lines to yours!):<br>
-    ``
+    
     cd Downloads
     scp Miniconda3-latest-Linux-x86.sh gilton@slurm.ttic.edu:~
     ssh gilton@slurm.ttic.edu
     bash Miniconda3-latest-Linux-x86.sh
-    ``
+
 
 
 ### Installing necessary packages
@@ -51,15 +51,15 @@ Most of the following commands will still work even if you don't have a GPU, don
  
 Navigate your terminal to this repository's base directory, and then run:
 
-    ``
+
     conda env create -f environment.yml
-    ``
+
     
 Respond ``y`` to any questions. To activate this environment, type
 
-    ``
+
     conda activate simple_pytorch_environment
-    ``
+
     
 Make sure you can run Python, and are able to run ``import torch``
 
@@ -71,16 +71,16 @@ GPU-compatible version if you run this script using the head node! Submit a job!
 
 First, clone this repository to your home directory. Then, create a text file named conda_install with the following lines in it:
 
-    ```
+
     #!/bin/bash
     
     source activate  
     conda env create -f ~/willettlabs_pytorch_tutorial/environment.yml &>> conda_installation.txt
-    ```
+
     
 Execute this script **on a gpu-enabled node** with the following:
 
-    ``sbatch -p willett-gpu -c1 ~/conda_install``
+    sbatch -p willett-gpu -c1 ~/conda_install
     
     
 ## Acknowledgments

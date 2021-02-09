@@ -1,6 +1,4 @@
-from __future__ import print_function
 import argparse
-
 import os
 import torch
 import torch.nn as nn
@@ -9,6 +7,9 @@ from torch.utils.data import DataLoader
 from src.dbpn_v1 import Net as DenseDBPN
 from src.data import get_training_set
 from core_training import training_loop
+from functools import partial
+
+print = partial(print, flush=True)
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch Super Res')
@@ -26,42 +27,36 @@ parser.add_argument('--hr_train_dataset', type=str, default='DIV2K_train_HR')
 parser.add_argument('--model_type', type=str, default='DBPNLL')
 parser.add_argument('--residual', type=bool, default=True)
 parser.add_argument('--patch_size', type=int, default=40, help='Size of cropped HR image')
-parser.add_argument('--pretrained', type=bool, default=False)
-parser.add_argument('--save_folder', default='weights/', help='Location to save checkpoint models')
+parser.add_argument('--use_pretrained', type=bool, default=False)
 parser.add_argument('--prefix', default='tpami_residual_filter8', help='Location to save checkpoint models')
 parser.add_argument('--savepath',
-                    default="/share/data/vision-greg2/users/gilton/dbpn_model.pt")
-parser.add_argument('--loadpath',
                     default="/share/data/vision-greg2/users/gilton/dbpn_model.pt")
 
 opt = parser.parse_args()
 
 
 save_location = opt.savepath
-load_location = opt.loadpath
 
 gpu_ids = []
 for ii in range(6):
     try:
         torch.cuda.get_device_properties(ii)
-        print(str(ii), flush=True)
+        print(str(ii))
         if not gpu_ids:
             gpu_ids = [ii]
         else:
             gpu_ids.append(ii)
     except AssertionError:
-        print('Not ' + str(ii) + "!", flush=True)
+        print('Not ' + str(ii) + "!")
 
-print(os.getenv('CUDA_VISIBLE_DEVICES'), flush=True)
+print(os.getenv('CUDA_VISIBLE_DEVICES'))
 gpu_ids = [int(x) for x in gpu_ids]
 # device management
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 use_dataparallel = len(gpu_ids) > 1
-print("GPU IDs: " + str([int(x) for x in gpu_ids]), flush=True)
+print("GPU IDs: " + str([int(x) for x in gpu_ids]))
 
 use_cuda = torch.cuda.is_available()
-if use_cuda:
-    raise Exception("No GPU found, please run without --cuda")
 
 torch.manual_seed(opt.seed)
 if use_cuda:
@@ -72,7 +67,7 @@ train_set = get_training_set(opt.data_dir, opt.hr_train_dataset, opt.upscale_fac
                              opt.data_augmentation)
 training_data_loader = DataLoader(dataset=train_set, num_workers=opt.threads, batch_size=opt.batchSize, shuffle=True)
 
-print('===> Building model ', opt.model_type)
+print('===> Building model')
 
 model = DenseDBPN(num_channels=3, base_filter=64, feat=256, num_stages=10, scale_factor=opt.upscale_factor)
 
@@ -80,11 +75,11 @@ optimizer = optim.Adam(model.parameters(), lr=opt.lr, betas=(0.9, 0.999), eps=1e
 
 scheduler = optim.lr_scheduler.StepLR(optimizer=optimizer, step_size=int(opt.nEpochs / 2), gamma=0.1)
 
-if os.path.exists(load_location):
+if os.path.exists(save_location) and opt.use_pretrained:
     if use_cuda:
-        saved_dict = torch.load(load_location)
+        saved_dict = torch.load(save_location)
     else:
-        saved_dict = torch.load(load_location, map_location='cpu')
+        saved_dict = torch.load(save_location, map_location='cpu')
     model.load_state_dict(saved_dict['model_state_dict'])
     optimizer.load_state_dict(saved_dict['optimizer_state_dict'])
     scheduler.load_state_dict(saved_dict['scheduler_state_dict'])

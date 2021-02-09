@@ -49,11 +49,7 @@ gpu-capable versions of Pytorch.
 Most of the following commands will still work even if you don't have a GPU, don't worry! I'll note the things
  to change if you don't have a GPU.
  
-Navigate your terminal to this repository's base directory, and then run:
-
-
-    conda env create -f environment.yml
-
+Navigate your terminal to this repository's base directory, and then run the commands in ``sample_environment_creator``.
     
 Respond ``y`` to any questions. To activate this environment, type
 
@@ -61,7 +57,9 @@ Respond ``y`` to any questions. To activate this environment, type
     conda activate simple_pytorch_env
 
     
-Make sure you can run Python, and are able to run ``import torch``
+Make sure you can run Python, and are able to run ``import torch``.
+
+If you'd like, I've included a sample environment.yml file as well.
 
 
 
@@ -69,18 +67,12 @@ Make sure you can run Python, and are able to run ``import torch``
 If you're running this on Slurm, do the following. **Note: Using conda to install pytorch will NOT install the
 GPU-compatible version if you run this script using the head node! Submit a job!**
 
-First, clone this repository to your home directory. Then, create a text file named conda_install with the following lines in it:
+First, clone this repository to your home directory. Then, modify ``sample_environment_creator`` to contain any
+other packages (or versions) that you'd like.
 
-
-    #!/bin/bash
-    
-    source activate  
-    conda env create -y -f ~/willettlabs_pytorch_tutorial/environment.yml &>> conda_installation.txt
-
-    
 Execute this script **on a gpu-enabled node** with the following:
 
-    sbatch -p willett-gpu -c1 ~/conda_install
+    sbatch -p willett-gpu -c1 ~/sample_environment_creator
     
     
 

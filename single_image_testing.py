@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from src.dbpn import Net as DBPN
+from src.dbpn_v1 import Net as DBPN_dense
 from src.data import get_training_set
 from core_training import training_loop
 from functools import partial
@@ -70,10 +71,10 @@ if use_cuda:
 
 # image_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/data/6046.jpg"
 image_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/data/nonstandardtestimage.png"
-save_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/ckpts/DBPN_x8.pt"
+save_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/ckpts/DBPNLL_x8.pt"
 
-# model = DBPN(num_channels=3, base_filter=64, feat=256, num_stages=10, scale_factor=opt.upscale_factor)
-model = DBPN(num_channels=3, base_filter=64, feat=256, num_stages=7, scale_factor=opt.upscale_factor)
+model = DBPN_dense(num_channels=3, base_filter=64, feat=256, num_stages=10, scale_factor=opt.upscale_factor)
+# model = DBPN(num_channels=3, base_filter=64, feat=256, num_stages=7, scale_factor=opt.upscale_factor)
 
 model = torch.nn.DataParallel(model, device_ids=gpu_ids)
 

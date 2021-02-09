@@ -4,11 +4,12 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from src.dbpn_v1 import Net as DenseDBPN
+from src.dbpn import Net as DBPN
 from src.data import get_training_set
 from core_training import training_loop
 from functools import partial
 from src import misc_utils
+from src import testing_utils
 import numpy as np
 import matplotlib
 matplotlib.use("TkAgg")
@@ -68,10 +69,13 @@ if use_cuda:
     torch.cuda.manual_seed(opt.seed)
 
 # image_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/data/6046.jpg"
-image_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/data/mandrill.tiff"
-save_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/DBPNLL_8x.pt"
+image_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/data/nonstandardtestimage.png"
+save_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/ckpts/DBPN_x8.pt"
 
-model = DenseDBPN(num_channels=3, base_filter=64, feat=256, num_stages=10, scale_factor=opt.upscale_factor)
+# model = DBPN(num_channels=3, base_filter=64, feat=256, num_stages=10, scale_factor=opt.upscale_factor)
+model = DBPN(num_channels=3, base_filter=64, feat=256, num_stages=7, scale_factor=opt.upscale_factor)
+
+model = torch.nn.DataParallel(model, device_ids=gpu_ids)
 
 if os.path.exists(save_location):
     if use_cuda:
@@ -79,9 +83,6 @@ if os.path.exists(save_location):
     else:
         saved_dict = torch.load(save_location, map_location='cpu')
     model.load_state_dict(saved_dict)
-
-if use_dataparallel:
-    model = torch.nn.DataParallel(model, device_ids=gpu_ids)
 
 if use_cuda:
     model = model.to(device=device)
@@ -99,16 +100,30 @@ def convert_to_tensor(img):
     return torch.from_numpy(np.asarray(img)).unsqueeze(0).permute((0,3,1,2)) / 255.0
 
 downsampled_img = misc_utils.rescale_img(pil_img, 1.0 / 8.0)
-bicubic_upscale = convert_to_tensor(misc_utils.rescale_img(downsampled_img, 8.0))
+# if you're just blowing up an image, run this:
+# downsampled_img = pil_img
 
 
 downsampled_tensor = convert_to_tensor(downsampled_img)
+bicubic_upscale = convert_to_tensor(misc_utils.rescale_img(downsampled_img, 8.0))
 
-reconstruction = bicubic_upscale + model(downsampled_tensor)
+# If you just want to blow up an image, uncomment these
+# downsampled_tensor = convert_to_tensor(pil_img)
+# bicubic_upscale = convert_to_tensor(misc_utils.rescale_img(pil_img, 8.0))
+
+reconstruction = model(downsampled_tensor)
+# reconstruction = bicubic_upscale + testing_utils.chop_forward(downsampled_tensor, model, scale=8)
 
 numpy_reconstruction = reconstruction.detach().cpu().numpy()[0,:,:,:]
 numpy_reconstruction = np.transpose(numpy_reconstruction, (1,2,0))
 
+numpy_bicubic = misc_utils.rescale_img(downsampled_img, 8.0)
+
+plt.figure(0)
 plt.imshow(numpy_reconstruction)
+plt.title('Reconstruction')
+
+plt.figure(1)
+plt.imshow(numpy_bicubic)
 plt.show()
 

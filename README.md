@@ -83,6 +83,10 @@ Execute this script **on a gpu-enabled node** with the following:
     sbatch -p willett-gpu -c1 ~/conda_install
     
     
+
+## Checkpoints
+You can find the checkpoint used in the single_image_testing.py demo on Box [here](https://uwmadison.box.com/s/0r7e7bfivjbvwrgkt5ob7t2xrf5j575a)
+
 ## Acknowledgments
 The code used in this repository is based on the code for [Deep Back-Projection Networks for Single-Image Superresolution](https://github.com/alterzero/DBPN-Pytorch).
 

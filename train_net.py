@@ -71,6 +71,7 @@ print('===> Building model')
 
 model = DenseDBPN(num_channels=3, base_filter=64, feat=256, num_stages=10, scale_factor=opt.upscale_factor)
 
+
 optimizer = optim.Adam(model.parameters(), lr=opt.lr, betas=(0.9, 0.999), eps=1e-8)
 
 scheduler = optim.lr_scheduler.StepLR(optimizer=optimizer, step_size=int(opt.nEpochs / 2), gamma=0.1)

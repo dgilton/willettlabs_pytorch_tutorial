@@ -70,7 +70,11 @@ if use_cuda:
     torch.cuda.manual_seed(opt.seed)
 
 # image_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/data/6046.jpg"
-image_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/data/nonstandardtestimage.png"
+image_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/data/mandrill.tiff"
+# image_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/data/nonstandardtestimage.png"
+# image_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/data/baby_x8.png"
+
+
 save_location = "/Users/dgilton/PycharmProjects/willettlabs_pytorch_tutorial/ckpts/DBPNLL_x8.pt"
 
 model = DBPN_dense(num_channels=3, base_filter=64, feat=256, num_stages=10, scale_factor=opt.upscale_factor)
@@ -112,7 +116,7 @@ bicubic_upscale = convert_to_tensor(misc_utils.rescale_img(downsampled_img, 8.0)
 # downsampled_tensor = convert_to_tensor(pil_img)
 # bicubic_upscale = convert_to_tensor(misc_utils.rescale_img(pil_img, 8.0))
 
-reconstruction = model(downsampled_tensor)
+reconstruction = model.forward(downsampled_tensor)
 # reconstruction = bicubic_upscale + testing_utils.chop_forward(downsampled_tensor, model, scale=8)
 
 numpy_reconstruction = reconstruction.detach().cpu().numpy()[0,:,:,:]

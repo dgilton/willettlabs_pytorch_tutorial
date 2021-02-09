@@ -58,7 +58,7 @@ Navigate your terminal to this repository's base directory, and then run:
 Respond ``y`` to any questions. To activate this environment, type
 
 
-    conda activate simple_pytorch_environment
+    conda activate simple_pytorch_env
 
     
 Make sure you can run Python, and are able to run ``import torch``
@@ -75,7 +75,7 @@ First, clone this repository to your home directory. Then, create a text file na
     #!/bin/bash
     
     source activate  
-    conda env create -f ~/willettlabs_pytorch_tutorial/environment.yml &>> conda_installation.txt
+    conda env create -y -f ~/willettlabs_pytorch_tutorial/environment.yml &>> conda_installation.txt
 
     
 Execute this script **on a gpu-enabled node** with the following:

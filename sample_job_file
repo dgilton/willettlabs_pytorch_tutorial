@@ -1,0 +1,23 @@
+#!/bin/bash
+
+logfilename="/home-nfs/gilton/equilibrium_pre_grad_gaussianblur0.txt"
+nepochs=120
+batchsize=16
+maxiters=50
+andersonbeta="2.5"
+lr="0.00070"
+andersonm=5
+lrgamma="0.5"
+schedstep="8"
+
+savepath="/share/data/vision-greg2/users/gilton/celeba_equilibriumgrad_pre_blur_save_inf_00.ckpt"
+loadpath="/share/data/vision-greg2/users/gilton/celeba_denoiser_normunet_3.ckpt"
+
+touch logfilename
+
+source activate equilibrium_pytorch
+start_time="$(date -u +%s)"
+python ~/learned_iterative_solvers/scripts/celeba/fixedpoint/deblur_grad_fixedeta_pre.py --n_epochs $nepochs --batch_size $batchsize --and_maxiters $maxiters --and_beta $andersonbeta --and_m $andersonm --lr $lr --lr_gamma $lrgamma --sched_step $schedstep --savepath $savepath --loadpath $loadpath &>> $logfilename
+end_time="$(date -u +%s)"
+time_elapsed="$(($end_time-$start_time))"
+echo "$time_elapsed to train" >> $logfilename

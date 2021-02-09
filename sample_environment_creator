@@ -1,0 +1,5 @@
+#!/bin/bash
+
+conda create -y -n sample_pytorch_env python=3.6
+source activate sample_pytorch_env
+conda install -y pytorch torchvision cudatoolkit matplotlib imageio numpy jupyterlab pillow -c pytorch -c conda-forge &>> conda_test.txt

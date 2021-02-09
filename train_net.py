@@ -95,5 +95,5 @@ if use_cuda:
 
 training_loop(model, loss_function=criterion, optimizer=optimizer, scheduler=None,
               train_dataloader = training_data_loader, test_dataloader = None,
-              save_every_n_epochs=5, save_location=save_location,
+              save_every_n_epochs=5, save_location=save_location, device=device,
               n_epochs=opt.nEpochs, use_dataparallel = use_dataparallel)

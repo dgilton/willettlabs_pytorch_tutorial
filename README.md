@@ -63,9 +63,11 @@ If you'd like, I've included a sample environment.yml file as well.
 
 
 
-### Installing necessary packages on Slurm
+### Installing necessary packages on TTIC's Slurm environment
 If you're running this on Slurm, do the following. **Note: Using conda to install pytorch will NOT install the
 GPU-compatible version if you run this script using the head node! Submit a job!**
+
+**Second note** These won't necessarily work for the Midway cluster! Be careful!
 
 First, clone this repository to your home directory. Then, modify ``sample_environment_creator`` to contain any
 other packages (or versions) that you'd like.
